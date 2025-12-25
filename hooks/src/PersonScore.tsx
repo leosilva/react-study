@@ -1,5 +1,15 @@
-import { useEffect, useReducer } from "react";
+import { useEffect, useReducer, useRef, useMemo, useCallback } from "react";
 import { getPerson } from "./getPerson";
+import { Reset } from "./Reset";
+
+function sillyExpensiveFunction() {
+    console.log("Executing silly function");
+    let sum = 0;
+    for (let i = 0; i < 10000; i++) {
+        sum += i;
+    }
+    return sum;
+}
 
 type State = {
     name: string | undefined;
@@ -57,11 +67,30 @@ export function PersonScore() {
         loading: true
     })
 
+    const addButtonRef = useRef<HTMLButtonElement>(null);
+
     useEffect(() => {
         getPerson().then(({name}) => 
             dispatch({type: 'initialize', name})
         );
     }, []);
+
+    useEffect(() => {
+        if (!loading) {
+            addButtonRef.current?.focus();
+        }
+    }, [loading]);
+
+    const expensiveCalculation = useMemo(() => {
+        return sillyExpensiveFunction();
+    }, []);
+
+    const handleReset = () => dispatch({type: 'reset'});
+    const handleResetMemoized = useCallback(
+        // eslint-disable-next-line react-hooks/use-memo
+        handleReset,
+        [],
+    );
 
     if (loading) {
         return <div>Loading...</div>
@@ -72,9 +101,10 @@ export function PersonScore() {
             <h3>
                 {name}, {score}
             </h3>
-            <button onClick={() => dispatch({type: 'increment'})}>Add</button>
+            <p>{expensiveCalculation}</p>
+            <button ref={addButtonRef} onClick={() => dispatch({type: 'increment'})}>Add</button>
             <button onClick={() => dispatch({type: 'decrement'})}>Subtract</button>
-            <button onClick={() => dispatch({type: 'reset'})}>Reset</button>
+            <Reset onClick={handleResetMemoized}/>
         </div>
     );
 }
