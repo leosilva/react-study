@@ -33,8 +33,10 @@
   }
 }
 
-.card {
+.container {
   padding: 2em;
+  border-radius: 2em;
+  border: 1px solid #c1c1c1;
 }
 
 .read-the-docs {
