@@ -1,4 +1,7 @@
 import { useState, type ReactNode } from 'react';
+import crossIcon from './assets/cross.svg';
+import infoIcon from './assets/info.svg';
+import warningIcon from './assets/warning.svg';
 
 type Props = {
    type?: string;
@@ -23,13 +26,11 @@ export function Alert({ type = 'information', heading, children, closable, onClo
          className={`inline-flex flex-col rounded-md border-1 border-transparent p-3 text-left ${type === 'warning' ? 'text-amber-900' : 'text-teal-900'} ${type === 'warning' ? 'bg-amber-50' : 'bg-teal-50'}`}
       >
          <div className="mb-1 flex items-center">
-            <span
-               role="img"
-               arial-label={type === 'warning' ? 'Warning' : 'Information'}
-               className="w-7"
-            >
-               {type === 'warning' ? '⚠️' : 'ℹ️'}
-            </span>
+            <img
+               src={type === 'warning' ? warningIcon : infoIcon}
+               alt={type === 'warning' ? 'Warning' : 'Information'}
+               className="mr-1 h-6 w-6"
+            />
             <span className="font-bold">{heading}</span>
             {closable && (
                <button
@@ -37,9 +38,7 @@ export function Alert({ type = 'information', heading, children, closable, onClo
                   onClick={handleCloseClick}
                   className="ml-auto flex h-6 w-6 cursor-pointer items-center justify-center border-none bg-transparent p-0"
                >
-                  <span role="img" aria-label="Close">
-                     ❌
-                  </span>
+                  <img src={crossIcon} alt="Close" />
                </button>
             )}
          </div>
